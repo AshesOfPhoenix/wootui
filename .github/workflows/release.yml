@@ -62,9 +62,7 @@ jobs:
 
             - name: Prepare artifact for Windows
               if: matrix.target.bun_os == 'win32'
-              run: |
-                  mv ${{ matrix.target.name }} ${{ matrix.target.name }}.exe
-                  7z a ${{ matrix.target.name }}.zip ${{ matrix.target.name }}.exe
+              run: zip ${{ matrix.target.name }}.zip ${{ matrix.target.name }}.exe
 
             - name: Prepare artifact for macOS
               if: matrix.target.bun_os == 'darwin'
