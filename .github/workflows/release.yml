@@ -1,42 +1,45 @@
 name: Build and Release
 
-# This workflow runs when a new tag is pushed to the repository
 on:
     push:
         tags:
-            - "v*" # Trigger on tags like v1.0.0, v1.2.3, etc.
+            - "v*"
 
 permissions:
-    contents: write # This is required to create a release and upload assets
+    contents: write
 
 jobs:
     build-and-release:
         name: Build and Release
-        runs-on: ubuntu-latest # Use a single runner for all builds
+        runs-on: ubuntu-latest
 
         strategy:
             matrix:
-                # Define all the targets you want to build for
                 target:
-                    - name: wootube-darwin-x64
-                      os: macos-latest # Runner OS for the build
+                    - name: tuitube-darwin-x64
+                      os: macos-latest
                       bun_target: bun-darwin-x64
+                      opentui_pkg: "@opentui/core-darwin-x64"
                       archive_ext: .zip
-                    - name: wootube-darwin-arm64
+                    - name: tuitube-darwin-arm64
                       os: macos-latest
                       bun_target: bun-darwin-aarch64
+                      opentui_pkg: "@opentui/core-darwin-arm64"
                       archive_ext: .zip
-                    - name: wootube-linux-x64
+                    - name: tuitube-linux-x64
                       os: ubuntu-latest
                       bun_target: bun-linux-x64
+                      opentui_pkg: "@opentui/core-linux-x64"
                       archive_ext: .tar.gz
-                    - name: wootube-linux-arm64
+                    - name: tuitube-linux-arm64
                       os: ubuntu-latest
                       bun_target: bun-linux-aarch64
+                      opentui_pkg: "@opentui/core-linux-arm64"
                       archive_ext: .tar.gz
-                    - name: wootube-windows-x64
+                    - name: tuitube-windows-x64
                       os: windows-latest
                       bun_target: bun-windows-x64
+                      opentui_pkg: "@opentui/core-win32-x64" # Note: win32 for Windows
                       archive_ext: .zip
 
         steps:
@@ -50,6 +53,9 @@ jobs:
 
             - name: Install dependencies
               run: bun install --frozen-lockfile
+
+            - name: Install target platform package
+              run: bun add ${{ matrix.target.opentui_pkg }}
 
             - name: Build executable
               run: bun build ./src/index.tsx --compile --target ${{ matrix.target.bun_target }} --outfile ${{ matrix.target.name }}
@@ -77,21 +83,19 @@ jobs:
 
     release:
         name: Create GitHub Release
-        needs: build-and-release # This job runs only after the build job is complete
+        needs: build-and-release
         runs-on: ubuntu-latest
 
         steps:
             - name: Download all artifacts
               uses: actions/download-artifact@v4
               with:
-                  path: artifacts # Download all artifacts to a directory named 'artifacts'
+                  path: artifacts
 
             - name: Create Release and Upload Assets
               uses: softprops/action-gh-release@v1
               with:
-                  # The release name will be the same as the tag
                   tag_name: ${{ github.ref_name }}
-                  # Use the body of the tag message as the release notes
                   body_path: ${{ github.event.head_commit.message }}
                   files: |
-                      artifacts/*/* # Upload all files from all subdirectories
+                      artifacts/*/*
