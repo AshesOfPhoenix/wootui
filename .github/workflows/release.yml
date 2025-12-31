@@ -55,24 +55,23 @@ jobs:
               run: bun install --frozen-lockfile
 
             - name: Install target platform package
-              run: bun install --os ${{ matrix.target.os }} --cpu ${{ matrix.target.cpu }}
+              run: bun install --os ${{ matrix.target.bun_os }} --cpu ${{ matrix.target.bun_cpu }}
 
             - name: Build executable
               run: bun build ./src/index.tsx --compile --target ${{ matrix.target.bun_target }} --outfile ${{ matrix.target.name }}
 
             - name: Prepare artifact for Windows
-              if: matrix.target.os == 'windows-latest'
+              if: matrix.target.bun_os == 'win32'
               run: |
                   mv ${{ matrix.target.name }} ${{ matrix.target.name }}.exe
                   7z a ${{ matrix.target.name }}.zip ${{ matrix.target.name }}.exe
-              shell: pwsh
 
             - name: Prepare artifact for macOS
-              if: matrix.target.os == 'macos-latest'
+              if: matrix.target.bun_os == 'darwin'
               run: zip ${{ matrix.target.name }}.zip ${{ matrix.target.name }}
 
             - name: Prepare artifact for Linux
-              if: matrix.target.os == 'ubuntu-latest'
+              if: matrix.target.bun_os == 'linux'
               run: tar -czf ${{ matrix.target.name }}.tar.gz ${{ matrix.target.name }}
 
             - name: Upload artifact
@@ -96,6 +95,6 @@ jobs:
               uses: softprops/action-gh-release@v1
               with:
                   tag_name: ${{ github.ref_name }}
-                  body_path: ${{ github.event.head_commit.message }}
+                  body: ${{ github.event.head_commit.message }}
                   files: |
                       artifacts/*/*
