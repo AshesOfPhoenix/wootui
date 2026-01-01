@@ -1,15 +1,26 @@
-# react
+<div align='center'>
+    <br/>
+    <br/>
+    <h3>wootui</h3>
+    <p>Translate your whole WooCommerce store to any language.</p>
+    <br/>
+    <br/>
+</div>
 
-To install dependencies:
 
-```bash
-bun install
+
+![Demo](wootui-demo.png)
+
+## Installation
+
+**Mac OS:**
+
+```sh
+curl -sf https://ashesofphoenix.github.io/wootui/install | bash
 ```
 
-To run:
+**Windows:**
 
-```bash
-bun dev
+```sh
+curl -sf https://ashesofphoenix.github.io/wootui/install.ps1 | iex
 ```
-
-This project was created using `bun create tui`. [create-tui](https://git.new/create-tui) is the easiest way to get started with OpenTUI.
