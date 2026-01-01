@@ -4,7 +4,9 @@ import { WizardContextProvider, type WizardContextValue } from './wizard-context
 import { WizardStep } from './wizard-step';
 import { ActionPanelOverlay } from '../action-panel';
 import type { WizardProps, WizardStepState, WizardStepContext } from './types';
-import { COLORS } from '../form/constants';
+import { COLORS, ICONS } from '../form/constants';
+import { Spinner } from '../../utils/spinner';
+import { TextAttributes } from '@opentui/core';
 
 /**
  * Wizard component for step-by-step progression with async step submission

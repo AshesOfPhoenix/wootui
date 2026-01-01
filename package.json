@@ -28,6 +28,7 @@
     "@opentui/react": "^0.1.63",
     "@toon-format/toon": "^2.1.0",
     "@types/papaparse": "^5.5.2",
+    "@types/react": "^19.2.7",
     "ai": "^6.0.3",
     "conf": "^15.0.2",
     "dotenv": "^17.2.3",

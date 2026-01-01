@@ -118,6 +118,37 @@ export function WizardStep({
 
     return (
         // biome-ignore lint/a11y/noStaticElementInteractions: Terminal UI handles keyboard separately
+        <consoleButton
+            label={title}
+            isLast={isLast}
+            labelColor={titleColor}
+            icon={icon}
+            iconColor={iconColor}
+            minHeight={5}
+            paddingLeft={3}
+            onMouseDown={() => {
+                if (!isLocked) {
+                    setFocusedStepIndex(index);
+                }
+            }}
+        >
+            <box flexDirection="row" columnGap={1}>
+                <text fg={titleColor} attributes={TextAttributes.BOLD}>
+                    {title}
+                </text>
+                {status === 'running' && <Spinner color={COLORS.running} label="Processing..." />}
+            </box>
+            <box flexDirection="column" paddingTop={1}>
+                <box>
+                    {children}
+                    <text key="spacer"> </text>
+                </box>
+            </box>
+        </consoleButton>
+    );
+
+    return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: Terminal UI handles keyboard separately
         <box
             flexDirection="column"
             onMouseDown={() => {

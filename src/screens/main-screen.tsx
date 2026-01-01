@@ -185,7 +185,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                     });
 
                     return (
-                        <box flexDirection="column" paddingTop={1}>
+                        <box flexDirection="column">
                             {/* 1. Summary Stats Header */}
                             <box
                                 flexDirection="row"

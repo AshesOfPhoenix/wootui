@@ -264,7 +264,7 @@ export function FormDropdown({
                 scrollbarOptions: {
                     showArrows: false,
                 },
-                height: 12,
+                height: maxVisibleItems + 1,
             }}
             focused={isFocused}
         >

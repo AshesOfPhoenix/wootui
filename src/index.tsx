@@ -1,12 +1,13 @@
+import { Toaster } from '@opentui-ui/toast/react';
 import { createCliRenderer } from '@opentui/core';
 import { createRoot } from '@opentui/react';
-import { useState, useCallback } from 'react';
-import { COLORS } from './components/form/constants';
-import { Toaster } from '@opentui-ui/toast/react';
-import type { ConfigSchema } from './types/config';
 import Conf from 'conf';
+import { useCallback, useState } from 'react';
+import { COLORS } from './components/form/constants';
 import { MainScreen } from './screens/main-screen';
 import { SettingsScreen } from './screens/settings-screen';
+import type { ConfigSchema } from './types/config';
+import { registerConsoleButton } from './components/step-box';
 
 type Screen = 'main' | 'settings';
 
@@ -16,9 +17,11 @@ const config = new Conf<ConfigSchema>({
         modelId: 'gemini-2.5-pro',
         apiKey: '',
         batchSize: 5,
-        outputDir: './output',
+        outputDir: '',
     },
 });
+
+registerConsoleButton();
 
 function App() {
     const [activeScreen, setActiveScreen] = useState<Screen>('main');
