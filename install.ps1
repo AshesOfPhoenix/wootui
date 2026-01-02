@@ -20,6 +20,10 @@ param (
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+# Set console encoding to UTF-8 to properly display Unicode characters
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 # --- Configuration ---
 $RepoOwner = "ashesofphoenix"
 $RepoName = "wootui"
