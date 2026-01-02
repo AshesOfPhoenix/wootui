@@ -4,12 +4,11 @@ import path from 'node:path';
 import { google } from '@ai-sdk/google';
 import { decode, encode, type JsonArray, type JsonObject, type JsonValue } from '@toon-format/toon';
 import { generateText } from 'ai';
-import dotenv from 'dotenv';
 import Papa from 'papaparse';
 import slugify from 'slugify';
 import { AttibuteParser, type AttributeColMap, MetaParser } from './attibute_parser';
 
-dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
+// dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 import { GoogleGenAI } from '@google/genai';
 import { createWooProductSchema, type WooRow } from './dynamic_schema';

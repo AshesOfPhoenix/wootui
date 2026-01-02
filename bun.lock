@@ -16,7 +16,6 @@
         "@types/react": "^19.2.7",
         "ai": "^6.0.3",
         "conf": "^15.0.2",
-        "dotenv": "^17.2.3",
         "papaparse": "^5.5.3",
         "react": "^19.2.3",
         "slugify": "^1.6.6",
@@ -24,6 +23,7 @@
       },
       "devDependencies": {
         "@types/bun": "latest",
+        "dotenv": "^17.2.3",
         "react-devtools-core": "7",
       },
       "peerDependencies": {

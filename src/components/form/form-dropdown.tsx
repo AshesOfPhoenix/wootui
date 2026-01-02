@@ -209,7 +209,7 @@ export function FormDropdown({
 
     const formStepChildren: React.ReactNode[] = [];
 
-    selectedOptions.forEach(opt => {
+    /* selectedOptions.forEach(opt => {
         formStepChildren.push(
             // biome-ignore lint/a11y/noStaticElementInteractions: Terminal UI handles interaction separately
             <box
@@ -225,7 +225,7 @@ export function FormDropdown({
 
     if (selectedOptions.length > 0) {
         formStepChildren.push(<text key="spacer"> </text>);
-    }
+    } */
 
     const scrollboxChildren: React.ReactNode[] = [];
     visibleItems.forEach((item, idx) => {

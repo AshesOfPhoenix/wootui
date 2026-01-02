@@ -90,83 +90,93 @@ export function TranslationMatrix({
     }
 
     const COL_WIDTH = 12;
-    const SOURCE_COL_WIDTH = 8;
+    const SOURCE_COL_WIDTH = 12;
 
     return (
-        <box flexDirection="column" marginTop={1}>
-            {/* Header Row */}
-            <box flexDirection="row">
-                <box
-                    width={SOURCE_COL_WIDTH}
-                    border={['top', 'left', 'right']}
-                    borderColor="#aaaaaa"
-                    borderStyle="single"
-                >
-                    <text attributes={TextAttributes.DIM}>Source</text>
-                </box>
-                {targetLanguages.map((lang, index) => (
-                    <box
-                        key={lang}
-                        width={COL_WIDTH}
-                        justifyContent="center"
-                        alignItems="center"
-                        border={['top', 'right', 'left']}
-                        borderColor="#aaaaaa"
-                        borderStyle="single"
-                    >
-                        <text attributes={TextAttributes.BOLD}>{languageMap[lang]}</text>
-                    </box>
-                ))}
-            </box>
-
-            {/* Rows */}
-            {sourceLanguages.map(sourceLang => (
-                <box key={sourceLang} flexDirection="row">
-                    <box
-                        width={SOURCE_COL_WIDTH}
-                        border={['bottom', 'left', 'right']}
-                        borderColor="#aaaaaa"
-                        borderStyle="single"
-                    >
-                        <text>{sourceLang.toUpperCase()}</text>
-                    </box>
-                    {targetLanguages.map((targetLang, index) => {
-                        const count = getCellContent(sourceLang, targetLang);
-                        const isOverride = overrideLanguages.includes(targetLang);
-
-                        // If count is 0 and not override, dim it
-                        const isDim = count === 0 && !isOverride;
-
-                        let color = undefined;
-                        if (isOverride) {
-                            color = COLORS.focused; // Gold/Yellow for override
-                        } else if (count > 0) {
-                            color = undefined; // Default white
-                        } else {
-                            color = '#666'; // Dim
-                        }
-
-                        return (
+        <box>
+            <scrollbox
+                flexDirection="row"
+                scrollX={true}
+                scrollY={false}
+                horizontalScrollbarOptions={{ showArrows: false }}
+                marginTop={1}
+                height={7}
+            >
+                <box flexDirection="column">
+                    {/* Header Row */}
+                    <box flexDirection="row">
+                        <box
+                            width={SOURCE_COL_WIDTH}
+                            border={['top', 'left', 'right']}
+                            borderColor="#aaaaaa"
+                            borderStyle="double"
+                        >
+                            <text attributes={TextAttributes.DIM}>Source</text>
+                        </box>
+                        {targetLanguages.map((lang, index) => (
                             <box
-                                key={`${sourceLang}-${targetLang}`}
+                                key={lang}
                                 width={COL_WIDTH}
                                 justifyContent="center"
                                 alignItems="center"
-                                border={['bottom', 'right', 'left']}
+                                border={['top', 'right', 'left']}
                                 borderColor="#aaaaaa"
                                 borderStyle="single"
                             >
-                                <text
-                                    fg={color}
-                                    attributes={isDim ? TextAttributes.DIM : undefined}
-                                >
-                                    {String(count)}
+                                <text attributes={TextAttributes.BOLD}>{languageMap[lang]}</text>
+                            </box>
+                        ))}
+                    </box>
+                    {/* Rows */}
+                    {sourceLanguages.map(sourceLang => (
+                        <box key={sourceLang} flexDirection="row">
+                            <box
+                                width={SOURCE_COL_WIDTH}
+                                border={['bottom', 'left', 'right']}
+                                borderColor="#aaaaaa"
+                                borderStyle="double"
+                            >
+                                <text>
+                                    {languageMap[sourceLang as LanguageCode] ??
+                                        sourceLang.toUpperCase()}
                                 </text>
                             </box>
-                        );
-                    })}
+                            {targetLanguages.map((targetLang, index) => {
+                                const count = getCellContent(sourceLang, targetLang);
+                                const isOverride = overrideLanguages.includes(targetLang);
+                                // If count is 0 and not override, dim it
+                                const isDim = count === 0 && !isOverride;
+                                let color = undefined;
+                                if (isOverride) {
+                                    color = COLORS.focused; // Gold/Yellow for override
+                                } else if (count > 0) {
+                                    color = undefined; // Default white
+                                } else {
+                                    color = '#666'; // Dim
+                                }
+                                return (
+                                    <box
+                                        key={`${sourceLang}-${targetLang}`}
+                                        width={COL_WIDTH}
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        border={['bottom', 'right', 'left']}
+                                        borderColor="#aaaaaa"
+                                        borderStyle="single"
+                                    >
+                                        <text
+                                            fg={color}
+                                            attributes={isDim ? TextAttributes.DIM : undefined}
+                                        >
+                                            {String(count)}
+                                        </text>
+                                    </box>
+                                );
+                            })}
+                        </box>
+                    ))}
                 </box>
-            ))}
+            </scrollbox>
         </box>
     );
 }

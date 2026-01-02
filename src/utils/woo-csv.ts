@@ -309,7 +309,6 @@ class WooCsvParser {
                 }),
             };
         });
-        console.log('--------------------------------');
 
         // Build a map of language -> flattened products
         const productsByLanguage = new Map<LanguageCode, Record<string, string | undefined>[]>();
@@ -328,7 +327,7 @@ class WooCsvParser {
         };
     }
 
-    public async estimateTokenAndPrice(
+    public async estimatePriceAndPreparePromptsForLanguage(
         productsFlat: Record<string, string | undefined>[],
         batchSize: number,
         targetLanguage: LanguageCode,
@@ -339,63 +338,69 @@ class WooCsvParser {
             apiKey,
         });
 
+        // here we slice the products into batches of batchSize
+        const productsBatches = productsFlat.reduce(
+            (acc: Record<string, string | undefined>[][], product, index) => {
+                const batchIndex = Math.floor(index / batchSize);
+                if (!acc[batchIndex]) {
+                    acc[batchIndex] = [];
+                }
+                acc[batchIndex].push(product);
+                return acc;
+            },
+            []
+        );
+
         // here we encode the products into a TOON format string.
         // we also replace the double quotes with single quotes and replace empty strings with "NULL" and replace backslashes with double backslashes.
         // The reason for NULL string is because the AI has problems when putting the same amount of columns if it's empty with commas.
-        const encodedProducts = encode(productsFlat?.slice(0, batchSize) ?? [], {
-            delimiter: ',',
-            replacer: (key, value: JsonValue) => {
-                // 1. Sanitize Strings (Single Quotes & Backslashes)
-                if (typeof value === 'string') {
-                    value = value.replace(/"/g, "'"); // Swap double to single quotes
-                    value = value.replace(/\\,/g, ','); // Remove literal backslashes
-                }
+        const encodedProductsBatches: string[] = productsBatches.map(batch => {
+            return encode(batch ?? [], {
+                delimiter: ',',
+                replacer: (key: string, value: JsonValue) => {
+                    // 1. Sanitize Strings (Single Quotes & Backslashes)
+                    if (typeof value === 'string') {
+                        value = value.replace(/"/g, "'"); // Swap double to single quotes
+                        value = value.replace(/\\,/g, ','); // Remove literal backslashes
+                    }
 
-                // 2. THE FIX: Unique Nulls
-                // If value is empty, inject the KEY (Column Name) into the placeholder
-                if (value === '' || value === null || value === undefined) {
-                    // Returns "NULL_Attribute 5", "NULL_Attribute 6", "NULL_Meta..."
-                    return `NULL_${key}`;
-                }
+                    // 2. THE FIX: Unique Nulls
+                    // If value is empty, inject the KEY (Column Name) into the placeholder
+                    if (value === '' || value === null || value === undefined) {
+                        // Returns "NULL_Attribute 5", "NULL_Attribute 6", "NULL_Meta..."
+                        return `NULL_${key}`;
+                    }
 
-                return value;
-            },
-        });
-
-        if (encodedProducts.length === 0) {
-            console.error('No products to translate');
-            return {
-                wordCount: 0,
-                tokenCount: 0,
-                estimatedPrice: {
-                    total: 0,
-                    input: 0,
-                    output: 0,
-                    perWordTotal: 0,
-                    perWordInput: 0,
-                    perWordOutput: 0,
+                    return value;
                 },
-                encodedProducts,
-                systemPrompt: '',
-                prompt: '',
-            };
-        }
+            });
+        });
 
         const systemPrompt = geminiSystemPrompt(targetLanguage);
-        const prompt = geminiPrompt(encodedProducts);
+        const prompts = encodedProductsBatches.map(batch => geminiPrompt(batch));
 
-        const tokens = await client.models.countTokens({
-            model: modelId,
-            contents: systemPrompt + prompt,
-        });
+        const tokensBatches = await Promise.all(
+            prompts.map(prompt =>
+                client.models.countTokens({
+                    model: modelId,
+                    contents: systemPrompt + prompt,
+                })
+            )
+        );
 
-        const wordCount = (systemPrompt + prompt).split(' ').length;
+        const wordCountTotal = prompts.reduce((acc, prompt) => acc + prompt.split(' ').length, 0);
 
         const estimatedPrice = estimateGeminiCost({
             model: modelId as keyof typeof GEMINI_PRICING,
             usage: {
-                promptTokens: tokens.totalTokens ?? 0,
-                completionTokens: tokens.totalTokens ?? 0,
+                promptTokens: tokensBatches.reduce(
+                    (acc, tokens) => acc + (tokens.totalTokens ?? 0),
+                    0
+                ),
+                completionTokens: tokensBatches.reduce(
+                    (acc, tokens) => acc + (tokens.totalTokens ?? 0),
+                    0
+                ),
             },
         });
 
@@ -406,20 +411,20 @@ class WooCsvParser {
         });
 
         return {
-            wordCount,
-            tokenCount: tokens.totalTokens ?? 0,
+            wordCount: wordCountTotal,
+            tokenCount: tokensBatches.reduce((acc, tokens) => acc + (tokens.totalTokens ?? 0), 0),
             estimatedPrice: {
                 total: estimatedPrice.totalCost,
                 input: estimatedPrice.inputCost,
                 output: estimatedPrice.outputCost,
-                perWordTotal: estimatedPrice.totalCost / wordCount,
-                perWordInput: estimatedPrice.inputCost / wordCount,
-                perWordOutput: estimatedPrice.outputCost / wordCount,
+                perWordTotal: estimatedPrice.totalCost / wordCountTotal,
+                perWordInput: estimatedPrice.inputCost / wordCountTotal,
+                perWordOutput: estimatedPrice.outputCost / wordCountTotal,
             },
 
-            encodedProducts,
+            encodedProducts: encodedProductsBatches[0] ?? '',
             systemPrompt,
-            prompt,
+            prompt: prompts[0] ?? '',
         };
     }
 

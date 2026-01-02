@@ -203,7 +203,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                                     value={summary.productSourceTranslations.length}
                                 />
                                 <LabelValue
-                                    label="Translated"
+                                    label="Translations"
                                     value={summary.productExistingTranslations.length}
                                     color="#fbbf24"
                                 />
@@ -434,7 +434,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                 const estimatesByLanguage = new Map<LanguageCode, EstimateTokenAndPriceResult>();
                 for (const language of values.targetLanguages) {
                     const productsFlat = productsByLanguage.get(language) ?? [];
-                    const estimate = await wooCsvParser.estimateTokenAndPrice(
+                    const estimate = await wooCsvParser.estimatePriceAndPreparePromptsForLanguage(
                         productsFlat,
                         batchSize,
                         language,
