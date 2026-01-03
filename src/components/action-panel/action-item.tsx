@@ -14,9 +14,6 @@ export interface ActionItemProps {
     onMouseDown?: () => void;
 }
 
-/**
- * Individual action item in the action panel
- */
 export function ActionItem({
     title,
     icon,

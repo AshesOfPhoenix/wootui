@@ -1,10 +1,102 @@
 import type { ScrollBoxRenderable } from '@opentui/core';
 import { useKeyboard } from '@opentui/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActionPanelOverlay } from '../action-panel';
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    Children,
+    isValidElement,
+    type ReactElement,
+    type ReactNode,
+} from 'react';
+import {
+    ActionPanelOverlay,
+    ActionPanel,
+    Action,
+    type ActionProps,
+    ActionPanelSection,
+    type ActionPanelSectionProps,
+    type ActionPanelProps,
+} from '../action-panel';
+import type { KeyboardShortcut } from '../form/constants';
 import type { WizardProps, WizardStepContext, WizardStepState } from './types';
 import { WizardContextProvider, type WizardContextValue } from './wizard-context';
 import { WizardStep } from './wizard-step';
+
+interface ParsedAction {
+    title: string;
+    icon?: string;
+    shortcut?: KeyboardShortcut;
+    onAction?: () => void | Promise<void>;
+    sectionTitle?: string;
+    type: 'action' | 'submit' | 'push';
+    target?: ReactNode;
+}
+
+function parseActionChildren(children: ReactNode): ParsedAction[] {
+    const actions: ParsedAction[] = [];
+
+    const parseAction = (
+        child: ReactElement<ActionProps>,
+        sectionTitle?: string
+    ): ParsedAction | null => {
+        if (child.type === Action) {
+            return {
+                title: child.props.title,
+                icon: child.props.icon,
+                shortcut: child.props.shortcut,
+                onAction: child.props.onAction,
+                sectionTitle,
+                type: 'action',
+            };
+        }
+        if (child.type === Action.SubmitForm) {
+            return {
+                title: child.props.title,
+                icon: child.props.icon,
+                shortcut: child.props.shortcut,
+                onAction: child.props.onSubmit,
+                sectionTitle,
+                type: 'submit',
+            };
+        }
+        if (child.type === Action.Push) {
+            return {
+                title: child.props.title,
+                icon: child.props.icon,
+                shortcut: child.props.shortcut,
+                sectionTitle,
+                type: 'push',
+                target: child.props.target,
+            };
+        }
+        return null;
+    };
+
+    Children.forEach(children, child => {
+        if (!isValidElement(child)) return;
+
+        if (child.type === ActionPanelSection) {
+            const sectionTitle = (child.props as ActionPanelSectionProps).title;
+            Children.forEach((child.props as ActionPanelSectionProps).children, sectionChild => {
+                if (isValidElement(sectionChild)) {
+                    const action = parseAction(
+                        sectionChild as ReactElement<ActionProps>,
+                        sectionTitle
+                    );
+                    if (action) actions.push(action);
+                }
+            });
+        } else {
+            const action = parseAction(child as ReactElement<ActionProps>);
+            if (action) actions.push(action);
+        }
+    });
+
+    return actions;
+}
 
 export function Wizard<TValues extends object>({
     steps,
@@ -139,7 +231,7 @@ export function Wizard<TValues extends object>({
             values,
             setValue,
             isLocked: locked,
-            isFocused: focusedStepIndex === focusedStepIndex,
+            isFocused: true, // Always true when submitting the focused step
             previousStepState,
         };
 
@@ -159,7 +251,7 @@ export function Wizard<TValues extends object>({
         } finally {
             isSubmittingRef.current = false;
         }
-    }, [focusedStepIndex, steps, values, isStepLocked, setStepState]);
+    }, [focusedStepIndex, steps, values, isStepLocked, setStepState, getStepState, setValue]);
 
     const navigateNext = useCallback(() => {
         setFocusedStepIndex(i => {
@@ -181,6 +273,21 @@ export function Wizard<TValues extends object>({
     const closeActionPanel = useCallback(() => {
         setIsActionPanelOpen(false);
     }, []);
+
+    const allActions = useMemo(() => {
+        if (!actions) return [];
+
+        let actionPanelChildren: ReactNode = null;
+        Children.forEach(actions, child => {
+            if (isValidElement(child) && child.type === ActionPanel) {
+                actionPanelChildren = (child.props as ActionPanelProps).children;
+            }
+        });
+        if (!actionPanelChildren) {
+            actionPanelChildren = actions;
+        }
+        return parseActionChildren(actionPanelChildren);
+    }, [actions]);
 
     useKeyboard(key => {
         if (isActionPanelOpen) {
@@ -207,6 +314,30 @@ export function Wizard<TValues extends object>({
 
         if (enableCommandPanelShortcut && key.ctrl && key.name === 'k') {
             openActionPanel();
+            return;
+        }
+
+        const matchingAction = allActions.find(action => {
+            if (!action.shortcut) return false;
+
+            const shortcut = action.shortcut;
+            const modifiers = shortcut.modifiers || [];
+
+            const ctrlMatch = modifiers.includes('ctrl') ? key.ctrl : !key.ctrl;
+            const shiftMatch = modifiers.includes('shift') ? key.shift : !key.shift;
+            const metaMatch = modifiers.includes('meta') ? key.meta : !key.meta;
+
+            const keyMatch = key.name === shortcut.key;
+
+            return ctrlMatch && shiftMatch && metaMatch && keyMatch;
+        });
+
+        if (matchingAction) {
+            if (matchingAction.type === 'submit') {
+                submitFocusedStep();
+            } else if (matchingAction.onAction) {
+                matchingAction.onAction();
+            }
             return;
         }
 

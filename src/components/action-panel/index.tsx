@@ -1,23 +1,19 @@
-import {
-    type ReactNode,
-    type ReactElement,
-    useState,
-    Children,
-    isValidElement,
-    useMemo,
-    useCallback,
-} from 'react';
 import { TextAttributes } from '@opentui/core';
 import { useKeyboard } from '@opentui/react';
-import { ActionPanelContextProvider, type ActionPanelContextValue } from './action-panel-context';
-import { ActionItem } from './action-item';
+import {
+    Children,
+    isValidElement,
+    type ReactElement,
+    type ReactNode,
+    useCallback,
+    useMemo,
+    useState,
+} from 'react';
 import { COLORS, type KeyboardShortcut } from '../form/constants';
+import { ActionItem } from './action-item';
+import { ActionPanelContextProvider, type ActionPanelContextValue } from './action-panel-context';
 
 const PANEL_WIDTH = 80;
-
-// ============================================================================
-// Action Components
-// ============================================================================
 
 export interface ActionProps {
     /** Action title */
@@ -34,11 +30,7 @@ export interface ActionProps {
     target?: ReactNode;
 }
 
-/**
- * Generic action component
- */
 export function Action(_props: ActionProps) {
-    // Declarative component - rendering handled by ActionPanel
     return null;
 }
 
@@ -53,11 +45,7 @@ interface ActionSubmitFormProps {
     onSubmit?: () => void | Promise<void>;
 }
 
-/**
- * Submit form action
- */
 function ActionSubmitForm(_props: ActionSubmitFormProps) {
-    // Declarative component - rendering handled by ActionPanel
     return null;
 }
 
@@ -72,21 +60,12 @@ interface ActionPushProps {
     target?: ReactNode;
 }
 
-/**
- * Push view action
- */
 function ActionPush(_props: ActionPushProps) {
-    // Declarative component - rendering handled by ActionPanel
     return null;
 }
 
-// Attach sub-components to Action
 Action.SubmitForm = ActionSubmitForm;
 Action.Push = ActionPush;
-
-// ============================================================================
-// ActionPanel.Section
-// ============================================================================
 
 export interface ActionPanelSectionProps {
     /** Section title (optional) */
@@ -95,17 +74,9 @@ export interface ActionPanelSectionProps {
     children?: ReactNode;
 }
 
-/**
- * Section grouping for actions
- */
 export function ActionPanelSection(_props: ActionPanelSectionProps) {
-    // Declarative component - rendering handled by ActionPanel
     return null;
 }
-
-// ============================================================================
-// ActionPanel
-// ============================================================================
 
 export interface ActionPanelProps {
     /** Action sections and items */
@@ -122,9 +93,6 @@ interface ParsedAction {
     target?: ReactNode;
 }
 
-/**
- * Parse ActionPanel children to extract actions
- */
 function parseActionChildren(children: ReactNode): ParsedAction[] {
     const actions: ParsedAction[] = [];
 
@@ -166,7 +134,6 @@ function parseActionChildren(children: ReactNode): ParsedAction[] {
     Children.forEach(children, child => {
         if (!isValidElement(child)) return;
 
-        // Check if it's a Section
         if (child.type === ActionPanelSection) {
             const sectionTitle = (child.props as ActionPanelSectionProps).title;
             Children.forEach((child.props as ActionPanelSectionProps).children, sectionChild => {
@@ -179,7 +146,6 @@ function parseActionChildren(children: ReactNode): ParsedAction[] {
                 }
             });
         } else {
-            // Direct action child
             const action = parseAction(child as ReactElement<ActionProps>);
             if (action) actions.push(action);
         }
@@ -188,9 +154,6 @@ function parseActionChildren(children: ReactNode): ParsedAction[] {
     return actions;
 }
 
-/**
- * Filter actions by search query
- */
 function filterActions(actions: ParsedAction[], query: string): ParsedAction[] {
     if (!query.trim()) return actions;
     const lowerQuery = query.toLowerCase();
@@ -201,17 +164,11 @@ function filterActions(actions: ParsedAction[], query: string): ParsedAction[] {
  * ActionPanel component - declarative container for actions
  * This component is meant to be passed to Form's actions prop
  */
-export function ActionPanel({ children }: ActionPanelProps) {
-    // This is a declarative component - actual rendering happens in ActionPanelOverlay
+export function ActionPanel(_props: ActionPanelProps) {
     return null;
 }
 
-// Attach Section to ActionPanel
 ActionPanel.Section = ActionPanelSection;
-
-// ============================================================================
-// ActionPanelOverlay
-// ============================================================================
 
 export interface ActionPanelOverlayProps {
     /** ActionPanel children */
@@ -224,9 +181,6 @@ export interface ActionPanelOverlayProps {
     onPush?: (target: ReactNode) => void;
 }
 
-/**
- * ActionPanel overlay that renders as a modal
- */
 export function ActionPanelOverlay({
     children,
     onClose,
@@ -236,29 +190,24 @@ export function ActionPanelOverlay({
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-    // Parse actions from ActionPanel children
     const allActions = useMemo(() => {
-        // Children should be an ActionPanel element
         let actionPanelChildren: ReactNode = null;
         Children.forEach(children, child => {
             if (isValidElement(child) && child.type === ActionPanel) {
                 actionPanelChildren = (child.props as ActionPanelProps).children;
             }
         });
-        // If children is the ActionPanel's children directly
         if (!actionPanelChildren) {
             actionPanelChildren = children;
         }
         return parseActionChildren(actionPanelChildren);
     }, [children]);
 
-    // Filter by search
     const filteredActions = useMemo(
         () => filterActions(allActions, searchQuery),
         [allActions, searchQuery]
     );
 
-    // Execute action
     const executeAction = useCallback(
         async (index: number) => {
             const action = filteredActions[index];
@@ -284,20 +233,37 @@ export function ActionPanelOverlay({
         [filteredActions, onClose, onSubmit, onPush]
     );
 
-    // Keyboard handling
     useKeyboard(key => {
         if (key.name === 'escape') {
             onClose();
         } else if (key.name === 'up') {
-            setSelectedIndex(i => Math.max(0, i - 1));
+            setSelectedIndex(i => (i - 1 + filteredActions.length) % filteredActions.length);
         } else if (key.name === 'down') {
-            setSelectedIndex(i => Math.min(filteredActions.length - 1, i + 1));
+            setSelectedIndex(i => (i + 1) % filteredActions.length);
         } else if (key.name === 'return') {
             executeAction(selectedIndex);
+        } else {
+            const matchingActionIndex = allActions.findIndex(action => {
+                if (!action.shortcut) return false;
+
+                const shortcut = action.shortcut;
+                const modifiers = shortcut.modifiers || [];
+
+                const ctrlMatch = modifiers.includes('ctrl') ? key.ctrl : !key.ctrl;
+                const shiftMatch = modifiers.includes('shift') ? key.shift : !key.shift;
+                const metaMatch = modifiers.includes('meta') ? key.meta : !key.meta;
+
+                const keyMatch = key.name === shortcut.key;
+
+                return ctrlMatch && shiftMatch && metaMatch && keyMatch;
+            });
+
+            if (matchingActionIndex !== -1) {
+                executeAction(matchingActionIndex);
+            }
         }
     });
 
-    // Context value
     const contextValue: ActionPanelContextValue = useMemo(
         () => ({
             selectedIndex,
@@ -310,7 +276,6 @@ export function ActionPanelOverlay({
         [selectedIndex, executeAction, onClose, searchQuery]
     );
 
-    // Group actions by section for rendering
     const sections = useMemo(() => {
         const sectionMap = new Map<string | undefined, ParsedAction[]>();
 
@@ -319,7 +284,10 @@ export function ActionPanelOverlay({
             if (!sectionMap.has(key)) {
                 sectionMap.set(key, []);
             }
-            sectionMap.get(key)!.push(action);
+            const section = sectionMap.get(key);
+            if (section) {
+                section.push(action);
+            }
         });
 
         return Array.from(sectionMap.entries()).map(([title, actions]) => ({
@@ -328,12 +296,10 @@ export function ActionPanelOverlay({
         }));
     }, [filteredActions]);
 
-    // Track flat index for selection
     let flatIndex = 0;
 
     return (
         <ActionPanelContextProvider value={contextValue}>
-            {/* Full-screen centering wrapper */}
             <box
                 position="absolute"
                 top={0}
@@ -343,7 +309,6 @@ export function ActionPanelOverlay({
                 justifyContent="center"
                 alignItems="center"
             >
-                {/* Panel container */}
                 <box
                     flexDirection="column"
                     padding={1}
@@ -351,12 +316,10 @@ export function ActionPanelOverlay({
                     width={PANEL_WIDTH}
                     backgroundColor={COLORS.background}
                 >
-                    {/* Header with escape hint */}
                     <box alignItems="flex-end" justifyContent="flex-end">
                         <text attributes={TextAttributes.DIM}>esc</text>
                     </box>
 
-                    {/* Search input */}
                     <box marginTop={1}>
                         <input
                             placeholder="Search actions..."
@@ -373,21 +336,18 @@ export function ActionPanelOverlay({
                         />
                     </box>
 
-                    {/* Actions list */}
                     <box flexDirection="column" marginTop={2}>
                         {sections.map((section, sectionIdx) => (
                             <box
                                 key={section.title ?? `section-${sectionIdx}`}
                                 flexDirection="column"
                             >
-                                {/* Section header */}
                                 {section.title && (
                                     <box marginTop={sectionIdx > 0 ? 1 : 0}>
                                         <text fg={COLORS.focused}>{section.title}</text>
                                     </box>
                                 )}
 
-                                {/* Section actions */}
                                 {section.actions.map(action => {
                                     const currentIndex = flatIndex++;
                                     const isSelected = currentIndex === selectedIndex;
@@ -407,7 +367,6 @@ export function ActionPanelOverlay({
                         ))}
                     </box>
 
-                    {/* Footer */}
                     <box flexDirection="row" marginTop={2} columnGap={4}>
                         <box flexDirection="row">
                             <text attributes={TextAttributes.BOLD}>↵</text>
@@ -424,8 +383,7 @@ export function ActionPanelOverlay({
     );
 }
 
-// Re-exports
 export { ActionItem } from './action-item';
 export type { ActionItemProps } from './action-item';
 export type { ActionPanelContextValue } from './action-panel-context';
-export type { ActionSubmitFormProps, ActionPushProps };
+export type { ActionPushProps, ActionSubmitFormProps };

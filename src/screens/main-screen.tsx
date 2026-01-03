@@ -747,7 +747,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                             <ActionPanel.Section title="Settings">
                                 <Action
                                     title="Configure Settings..."
-                                    shortcut={{ modifiers: ['ctrl', 'shift'], key: ',' }}
+                                    shortcut={{ modifiers: ['ctrl'], key: ',' }}
                                     onAction={onNavigateToSettings}
                                 />
                             </ActionPanel.Section>

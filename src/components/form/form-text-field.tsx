@@ -28,9 +28,6 @@ export interface FormTextFieldProps {
     _isLast?: boolean;
 }
 
-/**
- * Text input field step
- */
 export function FormTextField({
     title,
     placeholder,
@@ -54,7 +51,6 @@ export function FormTextField({
                 onInput={(val: string) => onChange?.(val)}
                 onChange={(val: string) => onChange?.(val)}
                 onPaste={(event: { text: string }) => {
-                    // Handle paste by appending pasted text to current value
                     onChange?.(value + event.text);
                 }}
                 textColor={COLORS.unfocused}
@@ -62,8 +58,15 @@ export function FormTextField({
                 focusedBackgroundColor="transparent"
                 focusedTextColor={COLORS.unfocused}
             />
-            {description && <text key="spacer"> </text>}
-            {description && <text attributes={TextAttributes.DIM}>{description}</text>}
+
+            {description && (
+                <>
+                    <text key="spacer"> </text>
+                    <box marginTop={1}>
+                        <text attributes={TextAttributes.DIM}>{description}</text>
+                    </box>
+                </>
+            )}
 
             {error && (
                 <text fg="red" attributes={TextAttributes.DIM}>
