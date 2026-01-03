@@ -42,7 +42,7 @@ export interface WizardStepDefinition<TValues extends object> {
     /** Title displayed for the step */
     title: string;
     /** Render function for the step content */
-    render: (ctx: WizardStepContext<TValues>) => ReactNode;
+    render: (ctx: WizardStepContext<TValues>, recenterScrollbox?: () => void) => ReactNode;
     /** Optional async submit handler - called when ctrl+return is pressed on this step */
     onSubmit?: (values: TValues, context: WizardStepContext<TValues>) => Promise<unknown> | unknown;
 }

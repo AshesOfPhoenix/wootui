@@ -125,7 +125,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
         {
             id: 'columns-selection',
             title: 'Select Columns',
-            render: ctx => {
+            render: (ctx, recenterScrollbox) => {
                 const prevState = ctx.previousStepState;
                 const summary = prevState?.data as WooCsvParseSummary | undefined;
 
@@ -198,7 +198,6 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                                 />
                             </box>
 
-                            {/* show only top gray border to mock a line */}
                             <box
                                 flexDirection="row"
                                 border={['top']}
@@ -231,9 +230,10 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                                     <Form.Dropdown
                                         title=""
                                         values={ctx.values.selectedMetaColumns}
-                                        onChange={vals =>
-                                            ctx.setValue('selectedMetaColumns', vals as string[])
-                                        }
+                                        onChange={vals => {
+                                            ctx.setValue('selectedMetaColumns', vals as string[]);
+                                            recenterScrollbox?.();
+                                        }}
                                         maxVisibleItems={10}
                                         isFocused={!ctx.isLocked}
                                     >
@@ -269,7 +269,7 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
         {
             id: 'target-languages',
             title: 'Target Languages',
-            render: ctx => {
+            render: (ctx, recenterScrollbox) => {
                 const prevState = ctx.previousStepState;
                 const step2Data = prevState?.data as Step2Result | undefined;
                 const parseSummary = step2Data?.parseSummary;
@@ -312,9 +312,10 @@ export function MainScreen({ onNavigateToSettings, config }: MainScreenProps) {
                                     <Form.Dropdown
                                         title=""
                                         values={ctx.values.targetLanguages}
-                                        onChange={vals =>
-                                            ctx.setValue('targetLanguages', vals as LanguageCode[])
-                                        }
+                                        onChange={vals => {
+                                            ctx.setValue('targetLanguages', vals as LanguageCode[]);
+                                            recenterScrollbox?.();
+                                        }}
                                         maxVisibleItems={8}
                                         isFocused={ctx.isFocused && !ctx.isLocked}
                                     >

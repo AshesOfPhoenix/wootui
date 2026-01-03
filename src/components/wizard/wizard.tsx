@@ -1,10 +1,10 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import type { ScrollBoxRenderable } from '@opentui/core';
 import { useKeyboard } from '@opentui/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActionPanelOverlay } from '../action-panel';
+import type { WizardProps, WizardStepContext, WizardStepState } from './types';
 import { WizardContextProvider, type WizardContextValue } from './wizard-context';
 import { WizardStep } from './wizard-step';
-import { ActionPanelOverlay } from '../action-panel';
-import type { WizardProps, WizardStepState, WizardStepContext } from './types';
-import { COLORS } from '../form/constants';
 
 export function Wizard<TValues extends object>({
     steps,
@@ -20,6 +20,7 @@ export function Wizard<TValues extends object>({
     const [isActionPanelOpen, setIsActionPanelOpen] = useState(false);
 
     const isSubmittingRef = useRef(false);
+    const scrollboxRef = useRef<ScrollBoxRenderable>(null);
 
     const setValue = useCallback(<K extends keyof TValues>(key: K, value: TValues[K]) => {
         setValues(prev => ({ ...prev, [key]: value }));
@@ -59,6 +60,57 @@ export function Wizard<TValues extends object>({
         setStepStates(new Map());
         isSubmittingRef.current = false;
     }, [initialValues]);
+
+    const recenterScrollbox = useCallback(() => {
+        const scrollbox = scrollboxRef.current;
+        if (!scrollbox) return;
+
+        // get all wizard steps)
+        const children = scrollbox.content.getChildren();
+        if (children.length === 0) return;
+
+        const viewportHeight = scrollbox.viewport.height;
+
+        // calc heights of all steps
+        const stepHeights: number[] = [];
+        for (const child of children) {
+            if (child) {
+                stepHeights.push(child.height);
+            }
+        }
+
+        const focusedStepHeight = stepHeights[focusedStepIndex] ?? 0;
+
+        // calc Y position of the focused step (before padding)
+        let focusedStepY = 0;
+        for (let i = 0; i < focusedStepIndex; i++) {
+            focusedStepY += stepHeights[i] ?? 0;
+        }
+
+        // calc padding needed to allow centering at edges
+        // top padding: allows first step to be centered vertically
+        const firstStepHeight = stepHeights[0] ?? 0;
+        const topPadding = Math.max(0, (viewportHeight - firstStepHeight) / 2);
+
+        // bottom padding: allows last step to be centered vertically
+        const lastStepHeight = stepHeights[stepHeights.length - 1] ?? 0;
+        const bottomPadding = Math.max(0, (viewportHeight - lastStepHeight) / 2);
+
+        // apply padding to content to enable centering
+        scrollbox.content.paddingTop = topPadding;
+        scrollbox.content.paddingBottom = bottomPadding;
+
+        // calc scroll position to center the focused step
+        const adjustedFocusedStepY = topPadding + focusedStepY;
+        const centerOffset = (viewportHeight - focusedStepHeight) / 2;
+        const targetScrollTop = Math.max(0, adjustedFocusedStepY - centerOffset);
+
+        scrollbox.scrollTo({ x: 0, y: targetScrollTop });
+    }, [focusedStepIndex]);
+
+    useEffect(() => {
+        recenterScrollbox();
+    }, [recenterScrollbox]);
 
     const submitFocusedStep = useCallback(async () => {
         if (isSubmittingRef.current) return;
@@ -196,16 +248,12 @@ export function Wizard<TValues extends object>({
         <box flexDirection="column" width="100%" flexGrow={1}>
             <WizardContextProvider value={contextValue}>
                 <scrollbox
+                    ref={scrollboxRef}
                     width="100%"
                     flexGrow={1}
-                    style={{
-                        scrollbarOptions: {
-                            showArrows: false,
-                            trackOptions: {
-                                backgroundColor: COLORS.background,
-                                foregroundColor: COLORS.focused,
-                            },
-                        },
+                    focused={false}
+                    verticalScrollbarOptions={{
+                        visible: false,
                     }}
                 >
                     {visibleSteps.map((step, index) => {
@@ -231,7 +279,7 @@ export function Wizard<TValues extends object>({
                                 status={stepState.status}
                                 isLocked={locked}
                             >
-                                {step.render(stepContext)}
+                                {step.render(stepContext, recenterScrollbox)}
                             </WizardStep>
                         );
                     })}
