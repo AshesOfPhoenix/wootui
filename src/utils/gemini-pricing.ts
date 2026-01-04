@@ -63,6 +63,7 @@ export const GEMINI_PRICING = {
 export interface TokenUsage {
     promptTokens: number;
     completionTokens: number;
+    reasoningTokens: number;
     /** Optional: Cache hit tokens (cached tokens are 90% cheaper, but countTokens already reflects this) */
     cacheTokens?: number;
 }
@@ -86,14 +87,11 @@ export interface CostEstimate {
     model: string;
     inputCost: number;
     outputCost: number;
+    reasoningCost: number;
     totalCost: number;
-    breakdown: {
-        promptTokens: number;
-        completionTokens: number;
-        inputRatePerM: number;
-        outputRatePerM: number;
-        contextTier: 'standard' | 'long';
-    };
+    inputTokens: number;
+    outputTokens: number;
+    reasoningTokens: number;
 }
 
 /**
@@ -127,20 +125,18 @@ export function estimateGeminiCost(options: CostEstimationOptions): CostEstimate
     // Calculate costs (convert tokens to millions)
     const inputCost = (usage.promptTokens / 1_000_000) * inputRatePerM;
     const outputCost = (usage.completionTokens / 1_000_000) * outputRatePerM;
-    const totalCost = inputCost + outputCost;
+    const reasoningCost = (usage.reasoningTokens / 1_000_000) * outputRatePerM;
+    const totalCost = inputCost + outputCost + reasoningCost;
 
     return {
         model: modelConfig.displayName,
         inputCost: parseFloat(inputCost.toFixed(6)),
         outputCost: parseFloat(outputCost.toFixed(6)),
+        reasoningCost: parseFloat(reasoningCost.toFixed(6)),
         totalCost: parseFloat(totalCost.toFixed(6)),
-        breakdown: {
-            promptTokens: usage.promptTokens,
-            completionTokens: usage.completionTokens,
-            inputRatePerM: parseFloat(inputRatePerM.toFixed(4)),
-            outputRatePerM: parseFloat(outputRatePerM.toFixed(4)),
-            contextTier: useLongContextPricing ? 'long' : 'standard',
-        },
+        inputTokens: usage.promptTokens,
+        outputTokens: usage.completionTokens,
+        reasoningTokens: usage.reasoningTokens,
     };
 }
 

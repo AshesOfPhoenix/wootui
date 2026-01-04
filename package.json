@@ -1,6 +1,6 @@
 {
   "name": "woodottranslate",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "module": "src/index.tsx",
   "type": "module",
   "private": true,

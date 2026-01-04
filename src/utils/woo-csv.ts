@@ -344,6 +344,8 @@ class WooCsvParser {
 
         const wordCountTotal = prompts.reduce((acc, prompt) => acc + prompt.split(' ').length, 0);
 
+        // here we estimate the price of the tokens using the gemini pricing library
+        // we multiply the tokens by 2 for the completion tokens and 1.5 for the reasoning tokens based on average usage
         const estimatedPrice = estimateGeminiCost({
             model: modelId as keyof typeof GEMINI_PRICING,
             usage: {
@@ -352,7 +354,11 @@ class WooCsvParser {
                     0
                 ),
                 completionTokens: tokensBatches.reduce(
-                    (acc, tokens) => acc + (tokens.totalTokens ?? 0),
+                    (acc, tokens) => acc + (tokens.totalTokens ?? 0) * 2,
+                    0
+                ),
+                reasoningTokens: tokensBatches.reduce(
+                    (acc, tokens) => acc + (tokens.totalTokens ?? 0) * 1.5,
                     0
                 ),
             },
@@ -366,11 +372,14 @@ class WooCsvParser {
 
         return {
             wordCount: wordCountTotal,
-            tokenCount: tokensBatches.reduce((acc, tokens) => acc + (tokens.totalTokens ?? 0), 0),
+            inputTokens: estimatedPrice.inputTokens,
+            outputTokens: estimatedPrice.outputTokens,
+            reasoningTokens: estimatedPrice.reasoningTokens,
             estimatedPrice: {
                 total: estimatedPrice.totalCost,
                 input: estimatedPrice.inputCost,
                 output: estimatedPrice.outputCost,
+                reasoning: estimatedPrice.reasoningCost,
                 perWordTotal: estimatedPrice.totalCost / wordCountTotal,
                 perWordInput: estimatedPrice.inputCost / wordCountTotal,
                 perWordOutput: estimatedPrice.outputCost / wordCountTotal,

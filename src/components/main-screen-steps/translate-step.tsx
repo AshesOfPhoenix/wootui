@@ -77,7 +77,6 @@ export function createTranslateStep(): WizardStepDefinition<TranslateWizardValue
                 | undefined;
             if (!carryData) throw new Error('Missing carry data from previous step');
 
-            // Validate configuration
             let validatedConfig: ReturnType<typeof wooCsvParser.validateTranslationConfig>;
             try {
                 validatedConfig = wooCsvParser.validateTranslationConfig();
@@ -122,7 +121,6 @@ export function createTranslateStep(): WizardStepDefinition<TranslateWizardValue
                     },
                 });
 
-                // Export source products
                 wooCsvParser.exportSourceProducts(
                     carryData.parseSummary.productSourceTranslations,
                     values.csvPath,

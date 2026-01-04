@@ -33,12 +33,16 @@ export function createTokenAndPriceStep(): WizardStepDefinition<TranslateWizardV
             }
 
             if (prevState?.status === WizardStepStatus.SUCCESS && carryData) {
-                let totalTokens = 0;
+                let totalInputTokens = 0;
+                let totalOutputTokens = 0;
+                let totalReasoningTokens = 0;
                 let totalPrice = 0;
 
                 const languageEntries = Array.from(carryData.estimatesByLanguage.entries());
                 for (const [, estimate] of languageEntries) {
-                    totalTokens += estimate.tokenCount;
+                    totalInputTokens += estimate.inputTokens;
+                    totalOutputTokens += estimate.outputTokens;
+                    totalReasoningTokens += estimate.reasoningTokens;
                     totalPrice += estimate.estimatedPrice.total;
                 }
 
@@ -52,7 +56,7 @@ export function createTokenAndPriceStep(): WizardStepDefinition<TranslateWizardV
                                         {languageMap[lang] ?? lang}
                                     </text>
                                     <text attributes={TextAttributes.DIM}>
-                                        {estimate.tokenCount.toLocaleString()} tokens
+                                        {`${estimate.inputTokens.toLocaleString()} iT / ${estimate.outputTokens.toLocaleString()} oT / ${estimate.reasoningTokens.toLocaleString()} rT`}
                                     </text>
                                     <text fg="#22c55e">
                                         ${estimate.estimatedPrice.total.toFixed(4)}
@@ -69,7 +73,18 @@ export function createTokenAndPriceStep(): WizardStepDefinition<TranslateWizardV
                         />
 
                         <box flexDirection="row" marginTop={1} columnGap={2}>
-                            <LabelValue label="Total Tokens" value={totalTokens.toLocaleString()} />
+                            <LabelValue
+                                label="Total iT"
+                                value={totalInputTokens.toLocaleString()}
+                            />
+                            <LabelValue
+                                label="Total oT"
+                                value={totalOutputTokens.toLocaleString()}
+                            />
+                            <LabelValue
+                                label="Total rT"
+                                value={totalReasoningTokens.toLocaleString()}
+                            />
                             <LabelValue
                                 label="Total Est. Cost"
                                 value={`$${totalPrice.toFixed(4)}`}
