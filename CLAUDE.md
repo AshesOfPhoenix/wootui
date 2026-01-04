@@ -26,22 +26,22 @@ bunx @biomejs/biome check --write . # Fix linting issues
 bunx @biomejs/biome format .        # Format code
 
 # Release
-bun version patch    # Bump patch version (e.g., 1.0.0 -> 1.0.1)
-bun version minor    # Bump minor version (e.g., 1.0.0 -> 1.1.0)
-bun version major    # Bump major version (e.g., 1.0.0 -> 2.0.0)
-bun version 1.2.3   # Set specific version
+npm version patch    # Bump patch version (e.g., 1.0.0 -> 1.0.1)
+npm version minor    # Bump minor version (e.g., 1.0.0 -> 1.1.0)
+npm version major    # Bump major version (e.g., 1.0.0 -> 2.0.0)
+npm version 1.2.3   # Set specific version
 ```
 
 **Release Process:**
 1. Make code changes and commit: `git add . && git commit -m "feat: new feature"`
-2. Update version and create tag: `bun version patch/minor/major`
+2. Update version and create tag: `npm version patch/minor/major`
 3. Push commits and tags: `git push && git push --tags`
 4. GitHub Actions automatically builds release on tag push (triggers on `v*` tags)
 
 **Notes:**
-- `bun version` updates `package.json` version, creates a commit, and creates a git tag
+- `npm version` updates `package.json` version, creates a commit, and creates a git tag with `v` prefix
 - Version is displayed in bottom-right corner of both MainScreen and SettingsScreen
-- Release tags should use `v` prefix (e.g., `v1.0.0`) - this is handled automatically by `bun version`
+- Release tags use `v` prefix automatically (e.g., `v1.0.0`) - created by `npm version`
 - Version file (`src/utils/version.ts`) is generated at build time and should not be committed
 
 ## Architecture
