@@ -2,46 +2,94 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to **WooTUI** - a powerful terminal user interface for translating WooCommerce products using AI.
 
-## Getting Started
+## What is WooTUI?
 
-Get started by **creating a new site**.
+WooTUI is a command-line application that automates the translation of WooCommerce product catalogs into multiple languages using Google's Gemini AI. It integrates seamlessly with the WordPress Multilingual Plugin (WPML) to provide a complete translation workflow.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+### Why WooTUI?
 
-### What you'll need
+**Speed & Efficiency**
+- Translate entire product catalogs in minutes, not hours
+- Batch processing for handling large inventories
+- Cost-effective AI translations with transparent pricing
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+**Accuracy & Quality**
+- Context-aware translations using Google Gemini
+- Preserves HTML formatting and special characters
+- Maintains brand consistency across languages
 
-## Generate a new site
+**Control & Flexibility**
+- Choose which columns to translate (descriptions, attributes, SEO meta)
+- Override or skip existing translations
+- Preview costs before executing translations
 
-Generate a new Docusaurus site using the **classic template**.
+**Terminal-First Design**
+- Fast, keyboard-driven interface
+- Works on macOS, Windows, and Linux
+- No browser required—runs entirely in your terminal
 
-The classic template will automatically be added to your project after you run the command:
+## Key Features
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+🤖 **AI-Powered Translation** - Uses Google Gemini for accurate, context-aware translations
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+🌍 **Multi-Language Support** - Translate to any target language supported by Gemini
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+💰 **Cost Transparency** - See token usage and pricing estimates before translating
 
-## Start your site
+📦 **WooCommerce CSV Compatible** - Works directly with WooCommerce product exports
 
-Run the development server:
+✅ **Column Selection** - Choose which columns to translate for maximum control
 
-```bash
-cd my-website
-npm run start
-```
+⌨️ **Terminal UI** - Fast, efficient interface built with OpenTUI
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+## How It Works
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+WooTUI guides you through a simple 6-step wizard:
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+1. **CSV Path** - Select your WooCommerce export file
+2. **Column Selection** - Choose which fields to translate
+3. **Target Languages** - Select languages and override settings
+4. **Cost Estimation** - Preview token usage and costs
+5. **Translation** - Execute translations via Gemini API
+6. **Results** - View summary and download translated CSV
+
+The translated CSV file is ready to import back into WooCommerce with WPML, preserving all translation groups and metadata.
+
+## Use Cases
+
+**E-commerce Store Owners**
+- Expand to international markets quickly
+- Maintain consistent product information across languages
+- Update translated catalogs when products change
+
+**Agencies & Developers**
+- Batch translate multiple client stores
+- Optimize translation costs with selective column translation
+- Integrate into automated deployment workflows
+
+**Multilingual Marketplaces**
+- Scale product listings to multiple regions
+- Ensure SEO optimization in every language
+- Maintain translation quality without manual work
+
+## Quick Start
+
+Ready to translate your first product? Head over to [Installation](./getting-started/installation.md) to get started!
+
+## Need Help?
+
+- **Getting Started**: New to WooTUI? Check out our [Getting Started Guide](./getting-started/installation.md)
+- **Workflows**: Learn common translation patterns in [Workflows](./workflows/basic-product-translation.md)
+- **Troubleshooting**: Run into issues? See [Troubleshooting](./troubleshooting/common-errors.md)
+- **GitHub**: Report bugs or request features at [github.com/ashesofphoenix/wootui](https://github.com/ashesofphoenix/wootui)
+
+## What's Next?
+
+- [Install WooTUI](./getting-started/installation.md) on your system
+- [Translate your first product](./getting-started/first-translation.md) in 5 minutes
+- [Learn the interface](./getting-started/understanding-the-interface.md) for efficient navigation
+- [Configure settings](./configuration/settings-overview.md) to customize your workflow

@@ -1,0 +1,13 @@
+{
+  "label": "Reference",
+  "position": 8,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-reference",
+  "link": {
+    "type": "generated-index",
+    "title": "Reference",
+    "description": "Technical reference documentation: keyboard shortcuts, supported languages, CSV schema, and architecture.",
+    "slug": "/category/reference"
+  }
+}

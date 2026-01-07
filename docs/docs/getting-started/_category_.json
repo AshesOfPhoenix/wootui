@@ -1,0 +1,13 @@
+{
+  "label": "Getting Started",
+  "position": 2,
+  "collapsible": true,
+  "collapsed": false,
+  "className": "category-getting-started",
+  "link": {
+    "type": "generated-index",
+    "title": "Getting Started with WooTUI",
+    "description": "Learn how to install WooTUI and translate your first product in minutes.",
+    "slug": "/category/getting-started"
+  }
+}

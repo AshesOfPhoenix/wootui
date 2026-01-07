@@ -4,20 +4,340 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+    padding: 5rem 0 6rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.heroBanner h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+}
+
+.heroBanner .hero__subtitle {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 2.5rem auto;
+    opacity: 0.9;
 }
 
 @media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+    .heroBanner {
+        padding: 2rem;
+    }
+
+    .heroBanner h1 {
+        font-size: 2.5rem;
+    }
+
+    .heroBanner .hero__subtitle {
+        font-size: 1.15rem;
+    }
 }
 
 .buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+/* Demo Section */
+.demoSection {
+    padding: 6rem 2rem 5rem 2rem;
+    background: var(--ifm-background-surface-color);
+    border-top: 1px solid var(--ifm-toc-border-color);
+    border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.demoContent {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.demoHeading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.demoDescription {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--ifm-font-color-secondary);
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 3.5rem auto;
+}
+
+.demoImageWrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    background: var(--ifm-background-color);
+    padding: 1.5rem;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.demoImageWrapper:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 8px 20px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.demoImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    border: 1px solid var(--ifm-toc-border-color);
+}
+
+.demoCaption {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--ifm-font-color-secondary);
+    font-style: italic;
+    padding: 0 1rem;
+}
+
+/* Features Section */
+.featuresSection {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.featuresSection > .container > h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-top: 3rem;
+}
+
+.featureCard {
+    padding: 2.5rem;
+    border-radius: 12px;
+    background: var(--ifm-background-surface-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.featureCard:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 12px 28px rgba(138, 43, 226, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+    font-size: 3.5rem;
+    margin-bottom: 1.25rem;
+    line-height: 1;
+}
+
+.featureTitle {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--ifm-color-primary);
+    line-height: 1.3;
+}
+
+.featureDescription {
+    font-size: 1rem;
+    color: var(--ifm-font-color-secondary);
+    line-height: 1.65;
+}
+
+/* Installation Section */
+.installationSection {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+}
+
+.installationSection > .container > h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+}
+
+.prerequisiteNote {
+    background: rgba(138, 43, 226, 0.1);
+    border-left: 4px solid var(--ifm-color-primary);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+}
+
+.installCommand {
+    margin-bottom: 2rem;
+}
+
+.installCommand h3 {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 996px) {
+    .featuresGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .featuresSection > .container > h2,
+    .installationSection > .container > h2 {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .featuresGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .featuresSection {
+        padding: 4rem 1rem;
+    }
+
+    .installationSection {
+        padding: 4rem 1rem;
+    }
+
+    .featuresSection > .container > h2,
+    .installationSection > .container > h2 {
+        font-size: 1.75rem;
+    }
+
+    .demoSection {
+        padding: 4rem 1rem 3rem 1rem;
+    }
+
+    .demoHeading {
+        font-size: 1.75rem;
+    }
+
+    .demoDescription {
+        font-size: 1rem;
+    }
+}
+
+/* === ANIMATIONS === */
+
+/* Fade in animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Apply animations to sections */
+.heroBanner {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.demoSection {
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.featuresSection {
+    animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.installationSection {
+    animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+/* Stagger feature cards */
+.featureCard:nth-child(1) {
+    animation: fadeInUp 0.6s ease-out 0.5s backwards;
+}
+
+.featureCard:nth-child(2) {
+    animation: fadeInUp 0.6s ease-out 0.6s backwards;
+}
+
+.featureCard:nth-child(3) {
+    animation: fadeInUp 0.6s ease-out 0.7s backwards;
+}
+
+.featureCard:nth-child(4) {
+    animation: fadeInUp 0.6s ease-out 0.8s backwards;
+}
+
+.featureCard:nth-child(5) {
+    animation: fadeInUp 0.6s ease-out 0.9s backwards;
+}
+
+.featureCard:nth-child(6) {
+    animation: fadeInUp 0.6s ease-out 1s backwards;
+}
+
+/* Button animation */
+.buttons .button {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.buttons .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.25);
+}
+
+.buttons .button:active {
+    transform: translateY(0);
+}
+
+/* Disable animations on mobile for performance and accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

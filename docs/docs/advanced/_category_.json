@@ -1,0 +1,13 @@
+{
+  "label": "Advanced Topics",
+  "position": 7,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-advanced",
+  "link": {
+    "type": "generated-index",
+    "title": "Advanced Topics",
+    "description": "Advanced topics for power users: cost optimization, custom prompts, and technical details.",
+    "slug": "/category/advanced"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "label": "WPML Integration",
+  "position": 5,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-wpml",
+  "link": {
+    "type": "generated-index",
+    "title": "WPML Integration",
+    "description": "Integrate WooTUI with WordPress Multilingual Plugin (WPML) for seamless translations.",
+    "slug": "/category/wpml-integration"
+  }
+}

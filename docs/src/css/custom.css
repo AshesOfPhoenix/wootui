@@ -4,27 +4,158 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/* === CUSTOM PALETTE === */
+
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* Purple Primary - based on #8A2BE2 (BlueViolet) */
+  --ifm-color-primary: #8a2be2;
+  --ifm-color-primary-dark: #7c26cb;
+  --ifm-color-primary-darker: #7524c0;
+  --ifm-color-primary-darkest: #601e9e;
+  --ifm-color-primary-light: #9840e5;
+  --ifm-color-primary-lighter: #9f4be6;
+  --ifm-color-primary-lightest: #b46ced;
+
+  /* Orange Accent - for hovers and highlights */
+  --wootui-orange: #ff9f43;
+  --wootui-orange-dark: #f68a1e;
+  --wootui-orange-light: #ffb870;
+
+  /* Semantic colors */
+  --ifm-color-success: #00d68f;
+  --ifm-color-info: #0095ff;
+  --ifm-color-warning: #ffaa00;
+  --ifm-color-danger: #ff4757;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Improved contrast for light mode */
+  --ifm-font-color-secondary: #525860;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* === DARK MODE - TERMINAL THEME === */
+
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  /* Slightly brighter purple for dark mode visibility */
+  --ifm-color-primary: #a76bf2;
+  --ifm-color-primary-dark: #9650ef;
+  --ifm-color-primary-darker: #8e42ed;
+  --ifm-color-primary-darkest: #751ae5;
+  --ifm-color-primary-light: #b886f5;
+  --ifm-color-primary-lighter: #c193f6;
+  --ifm-color-primary-lightest: #dbbbfc;
+
+  /* Terminal Backgrounds */
+  --ifm-background-color: #1a1b26;
+  --ifm-background-surface-color: #24283b;
+
+  /* Orange accent adjusted for dark mode */
+  --wootui-orange: #ffb870;
+  --wootui-orange-dark: #ff9f43;
+  --wootui-orange-light: #ffd1a3;
+
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  /* Better secondary text contrast in dark mode */
+  --ifm-font-color-secondary: #a9b1ba;
+}
+
+/* === COMPONENT STYLING === */
+
+/* Primary Button - Purple */
+.button--primary {
+  --ifm-button-background-color: var(--ifm-color-primary);
+  --ifm-button-border-color: var(--ifm-color-primary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.button--primary:hover {
+  --ifm-button-background-color: var(--ifm-color-primary-dark);
+  --ifm-button-border-color: var(--ifm-color-primary-dark);
+}
+
+/* Secondary Button - Orange accent on hover */
+.button--secondary {
+  border: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+.button--secondary:hover {
+  border-color: var(--wootui-orange);
+  color: var(--wootui-orange);
+  background: transparent;
+}
+
+/* Navigation links - Orange accent */
+.navbar__link:hover,
+.footer__link-item:hover {
+  color: var(--wootui-orange);
+  text-decoration: none;
+}
+
+/* Active/current navbar link - Purple */
+.navbar__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Code blocks - Purple accent */
+.theme-code-block {
+  border-left: 3px solid var(--ifm-color-primary);
+}
+
+/* Links - Purple primary, orange hover */
+a {
+  color: var(--ifm-color-primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--wootui-orange);
+  text-decoration: none;
+}
+
+/* Sidebar - Purple active item */
+.menu__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+  border-left: 3px solid var(--ifm-color-primary);
+}
+
+.menu__link:hover {
+  color: var(--wootui-orange);
+  background-color: transparent;
+}
+
+/* Hero gradient overlay (add visual interest) */
+.hero--primary {
+  background: linear-gradient(
+    135deg,
+    var(--ifm-color-primary-darker) 0%,
+    var(--ifm-color-primary) 50%,
+    var(--ifm-color-primary-light) 100%
+  );
+  position: relative;
+}
+
+.hero--primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(255, 159, 67, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(167, 107, 242, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Ensure text is above gradient overlay */
+.hero--primary .container {
+  position: relative;
+  z-index: 1;
 }

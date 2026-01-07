@@ -1,0 +1,13 @@
+{
+  "label": "Workflows",
+  "position": 3,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-workflows",
+  "link": {
+    "type": "generated-index",
+    "title": "Translation Workflows",
+    "description": "Common workflows and use cases for translating WooCommerce products with WooTUI.",
+    "slug": "/category/workflows"
+  }
+}

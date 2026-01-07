@@ -1,0 +1,13 @@
+{
+  "label": "Troubleshooting",
+  "position": 6,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-troubleshooting",
+  "link": {
+    "type": "generated-index",
+    "title": "Troubleshooting",
+    "description": "Solutions to common issues and errors when using WooTUI.",
+    "slug": "/category/troubleshooting"
+  }
+}

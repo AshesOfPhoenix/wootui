@@ -6,8 +6,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
     title: 'WooTUI',
-    tagline:
-        'WootUI is an OpenTUI app for translating WooCommerce products into multiple languages.',
+    tagline: 'Translate WooCommerce products to any language using AI.',
     favicon: 'img/favicon.ico',
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -28,6 +27,13 @@ const config: Config = {
 
     onBrokenLinks: 'throw',
 
+    // Markdown configuration
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
+    },
+
     // Even if you don't use internationalization, you can use this field to set
     // useful metadata like html lang. For example, if your site is Chinese, you
     // may want to replace "en" with "zh-Hans".
@@ -42,10 +48,6 @@ const config: Config = {
             {
                 docs: {
                     sidebarPath: './sidebars.ts',
-                    // Please change this to your repo.
-                    // Remove this to remove the "edit this page" links.
-                    // editUrl:
-                    //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
                 },
                 theme: {
                     customCss: './src/css/custom.css',
@@ -56,14 +58,16 @@ const config: Config = {
 
     themeConfig: {
         // Replace with your project's social card
-        image: 'img/wootui-social-card.jpg',
+        image: 'img/wootui-social-card.png',
         colorMode: {
+            defaultMode: 'dark',
+            disableSwitch: false,
             respectPrefersColorScheme: true,
         },
         navbar: {
             title: 'WooTUI',
             logo: {
-                alt: 'WooTUI',
+                alt: 'WooTUI Logo',
                 src: 'img/logo.svg',
             },
             items: [
@@ -71,7 +75,7 @@ const config: Config = {
                     type: 'docSidebar',
                     sidebarId: 'tutorialSidebar',
                     position: 'left',
-                    label: 'Tutorial',
+                    label: 'Docs',
                 },
                 {
                     href: 'https://github.com/ashesofphoenix/wootui',
@@ -87,21 +91,17 @@ const config: Config = {
                     title: 'Docs',
                     items: [
                         {
-                            label: 'Tutorial',
+                            label: 'Introduction',
                             to: '/docs/intro',
+                        },
+                        {
+                            label: 'Getting Started',
+                            to: '/docs/getting-started/installation',
                         },
                     ],
                 },
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
                 {
-                    title: 'More',
+                    title: 'Community',
                     items: [
                         {
                             label: 'GitHub',
@@ -110,7 +110,7 @@ const config: Config = {
                     ],
                 },
             ],
-            copyright: `Copyright © ${new Date().getFullYear()} WooTUI, Inc. Built by Kristjan.`,
+            copyright: `Copyright © ${new Date().getFullYear()} WooTUI. Built by Kristjan.`,
         },
         prism: {
             theme: prismThemes.github,

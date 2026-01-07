@@ -1,0 +1,13 @@
+{
+  "label": "Configuration",
+  "position": 4,
+  "collapsible": true,
+  "collapsed": true,
+  "className": "category-configuration",
+  "link": {
+    "type": "generated-index",
+    "title": "Configuration",
+    "description": "Configure WooTUI settings, API keys, models, and output directories.",
+    "slug": "/category/configuration"
+  }
+}
